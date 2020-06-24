@@ -27,13 +27,13 @@ $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 #$fileLocation = '\\SHARE_LOCATION\to\INSTALLER_FILE'
 # Community Repo: Use official urls for non-redist binaries or redist where total package size is over 200MB
 # Internal/Organization: Download from internal location (internet sources are unreliable)
-$url        = 'https://github.com/qupath/qupath/releases/download/v0.1.2/QuPath-0.1.2.exe' # download url, HTTPS preferred
+$url        = 'https://github.com/qupath/qupath/releases/download/v' + $env:ChocolateyPackageVersion + '/QuPath-' + $env:ChocolateyPackageVersion + '-Windows.zip' # download url, HTTPS preferred
 $url64      = $url # 64bit URL here (HTTPS preferred) or remove - if installer contains both (very rare), use $url
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
   unzipLocation = $toolsDir
-  fileType      = 'exe' #only one of these: exe, msi, msu
+  # fileType      = 'msi' #only one of these: exe, msi, msu
   url           = $url
   url64bit      = $url64
   #file         = $fileLocation
@@ -44,18 +44,18 @@ $packageArgs = @{
   # To determine checksums, you can get that from the original site if provided. 
   # You can also use checksum.exe (choco install checksum) and use it 
   # e.g. checksum -t sha256 -f path\to\file
-  checksum      = '62BF9B2DD9D5C2180B0BCB6A6EE5F163'
-  checksumType  = 'md5' #default is md5, can also be sha1, sha256 or sha512
-  checksum64    = '62BF9B2DD9D5C2180B0BCB6A6EE5F163'
-  checksumType64= 'md5' #default is checksumType
+  checksum      = '8010BB932A0B209DA9E26307AE44F1F49636B04A661E52294A00BD0845852A42'
+  checksumType  = 'sha256' #default is md5, can also be sha1, sha256 or sha512
+  checksum64    = $checksum
+  checksumType64= $checksumType #default is checksumType
 
   # MSI
-  #silentArgs    = "/SILENT" # ALLUSERS=1 DISABLEDESKTOPSHORTCUT=1 ADDDESKTOPICON=0 ADDSTARTMENU=0
-  validExitCodes= @(0, 3010, 1641)
+  # silentArgs    = "/quiet"
+  # validExitCodes= @(0, 3010, 1641)
   # OTHERS
   # Uncomment matching EXE type (sorted by most to least common)
   #silentArgs   = '/S'           # NSIS
-  silentArgs   = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-' # Inno Setup
+  # silentArgs   = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-' # Inno Setup
   #silentArgs   = '/s'           # InstallShield
   #silentArgs   = '/s /v"/qn"'   # InstallShield with MSI
   #silentArgs   = '/s'           # Wise InstallMaster
@@ -68,8 +68,8 @@ $packageArgs = @{
   #validExitCodes= @(0) #please insert other valid exit codes here
 }
 
-Install-ChocolateyPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-package
-#Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
+# Install-ChocolateyPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-package
+Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
 ## If you are making your own internal packages (organizations), you can embed the installer or 
 ## put on internal file share and use the following instead (you'll need to add $file to the above)
 #Install-ChocolateyInstallPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-install-package
@@ -124,8 +124,9 @@ Install-ChocolateyPackage @packageArgs # https://chocolatey.org/docs/helpers-ins
 
 ## Add specific files as shortcuts to the desktop
 ## - https://chocolatey.org/docs/helpers-install-chocolatey-shortcut
-#$target = Join-Path $toolsDir "$($packageName).exe"
-# Install-ChocolateyShortcut -shortcutFilePath "<path>" -targetPath "<path>" [-workDirectory "C:\" -arguments "C:\test.txt" -iconLocation "C:\test.ico" -description "This is the description"]
+$target = Join-Path $env:ChocolateyInstall "bin\QuPath-$env:ChocolateyPackageVersion.exe"
+# Install-ChocolateyShortcut -shortcutFilePath "<path>" -targetPath $target [-workDirectory "C:\" -arguments "C:\test.txt" -iconLocation "C:\test.ico" -description "This is the description"]
+Install-ChocolateyShortcut -shortcutFilePath "C:\Users\Public\Desktop\$packageName.lnk" -targetPath $target
 
 ## Outputs the bitness of the OS (either "32" or "64")
 ## - https://chocolatey.org/docs/helpers-get-o-s-architecture-width
