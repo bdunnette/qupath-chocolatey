@@ -18,7 +18,7 @@ $ErrorActionPreference = 'Stop'; # stop on all errors
 #{{ChecksumType}} - The checksum type for the url | /ct
 #{{ChecksumTypex64}} - The checksum type for the 64-bit url | /ct64
 
-$toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 # Internal packages (organizations) or software that has redistribution rights (community repo)
 # - Use `Install-ChocolateyInstallPackage` instead of `Install-ChocolateyPackage`
 #   and put the binaries directly into the tools folder (we call it embedding)
@@ -27,27 +27,27 @@ $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 #$fileLocation = '\\SHARE_LOCATION\to\INSTALLER_FILE'
 # Community Repo: Use official urls for non-redist binaries or redist where total package size is over 200MB
 # Internal/Organization: Download from internal location (internet sources are unreliable)
-$url        = 'https://github.com/qupath/qupath/releases/download/v' + $env:ChocolateyPackageVersion + '/QuPath-' + $env:ChocolateyPackageVersion + '-Windows.zip' # download url, HTTPS preferred
-$url64      = $url # 64bit URL here (HTTPS preferred) or remove - if installer contains both (very rare), use $url
+$url = 'https://github.com/qupath/qupath/releases/download/v' + $env:ChocolateyPackageVersion + '/QuPath-' + $env:ChocolateyPackageVersion + '-Windows.zip' # download url, HTTPS preferred
+$url64 = $url # 64bit URL here (HTTPS preferred) or remove - if installer contains both (very rare), use $url
 
 $packageArgs = @{
-  packageName   = $env:ChocolateyPackageName
-  unzipLocation = $toolsDir
+  packageName    = $env:ChocolateyPackageName
+  unzipLocation  = $toolsDir
   # fileType      = 'msi' #only one of these: exe, msi, msu
-  url           = $url
-  url64bit      = $url64
+  url            = $url
+  url64bit       = $url64
   #file         = $fileLocation
 
-  softwareName  = 'qupath*' #part or all of the Display Name as you see it in Programs and Features. It should be enough to be unique
+  softwareName   = 'qupath*' #part or all of the Display Name as you see it in Programs and Features. It should be enough to be unique
 
   # Checksums are now required as of 0.10.0.
   # To determine checksums, you can get that from the original site if provided. 
   # You can also use checksum.exe (choco install checksum) and use it 
   # e.g. checksum -t sha256 -f path\to\file
-  checksum      = '8010BB932A0B209DA9E26307AE44F1F49636B04A661E52294A00BD0845852A42'
-  checksumType  = 'sha256' #default is md5, can also be sha1, sha256 or sha512
-  checksum64    = $checksum
-  checksumType64= $checksumType #default is checksumType
+  checksum       = '668DBDF6840833B3D8C6577FDAF7C2E3759DC27DABF37D19741E56ECFD925DCA'
+  checksumType   = 'sha256' #default is md5, can also be sha1, sha256 or sha512
+  checksum64     = $checksum
+  checksumType64 = $checksumType #default is checksumType
 
   # MSI
   # silentArgs    = "/quiet"
@@ -64,7 +64,7 @@ $packageArgs = @{
   #silentArgs   = '-s'           # Ghost
   # Note that some installers, in addition to the silentArgs above, may also need assistance of AHK to achieve silence.
   #silentArgs   = ''             # none; make silent with input macro script like AutoHotKey (AHK)
-                                 #       https://chocolatey.org/packages/autohotkey.portable
+  #       https://chocolatey.org/packages/autohotkey.portable
   #validExitCodes= @(0) #please insert other valid exit codes here
 }
 
